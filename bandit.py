@@ -51,7 +51,7 @@ class BanditArray():
                 else:
                     curr_row.append( Bandit(user=i, item=j, mu=np.random.uniform(0.0, 1.0)) )
             self.bandit_arr.append(curr_row)
-            
+
     def get_bandit(self, user, item):
         return self.bandit_arr[user][item]
 
@@ -86,7 +86,7 @@ class LearnedBanditArray():
             curr_row = []
             for j in range(num_items):
                 curr_row.append( LearnedBandit(user=i, item=j) )
-            self.bandit_arr.append(curr_row)
+            self.learned_bandit_arr.append(curr_row)
 
     def get_bandit(self, user, item):
         return self.learned_bandit_arr[user][item]
