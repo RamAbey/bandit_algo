@@ -63,20 +63,6 @@ class MidPoint(Allocation):
     def get_price(self, learned_bandit):
         return (learned_bandit.high + learned_bandit.low)/2 - 1e-10
 
-    """
-    def allocate(self, bandit_arr, learned_bandit_arr, allocation):
-        revenue, acceptances = 0, 0
-        for (user, item) in allocation:
-            curr_bandit = learned_bandit_arr.get_bandit(user, item)
-            price = self.get_price(curr_bandit)
-            signal = bandit_arr.get_bandit(user, item).pull_arm(price)
-            curr_bandit.process_signal(signal, price)
-            revenue += signal*price
-            acceptances += signal
-        return {'revenue': revenue, 
-                'acceptances': acceptances}
-    """
-
 class GradLower(Allocation):
 
     name = 'gradlower'
@@ -86,24 +72,17 @@ class GradLower(Allocation):
             return learned_bandit.low
         return (learned_bandit.high + learned_bandit.low)/2
 
-    """
-    def allocate(self, bandit_arr, learned_bandit_arr, allocation):
-        revenue, acceptances = 0, 0
-        for (user, item) in allocation:
-            curr_bandit = learned_bandit_arr.get_bandit(user, item)
-            price = self.get_price(curr_bandit)
-            signal = bandit_arr.get_bandit(user, item).pull_arm(price)
-            curr_bandit.process_signal(signal, price)
-            revenue += signal*price
-            acceptances += signal
-        return {'revenue': revenue, 
-                'acceptances': acceptances}
-        """
 
-"""
 class Walrasian(Allocation):
 
+    name = 'walrasian'
 
+    def get_price(self, learned_bandit):
+        if learned_bandit.high - learned_bandit.low < 1e-5:
+            return learned_bandit.dual
+        return (learned_bandit.high + learned_bandit.low)/2
+
+"""
 class SyncedWalrasian(Walrasian):
 
 
