@@ -60,7 +60,7 @@ class Simulation():
             self.revenue.append(result['revenue'])
         
 
-        return revenue
+        return self.revenue
 
 
     def run_n_simulations(self, iterations, n):
