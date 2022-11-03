@@ -53,7 +53,6 @@ class Simulation():
     def run_simulation(self, iterations, seed=0):
         self.set_bandit_array(seed=seed)
         model = ConcreteModel()
-        # self.allocation.model = model
         model.Users = range(self.num_users)
         model.Items = range(self.num_items)
         if self.allocation.name == 'walrasian':
