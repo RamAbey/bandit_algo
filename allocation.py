@@ -61,7 +61,7 @@ class MidPoint(Allocation):
             price = self.get_price(curr_bandit)
             signal = bandit_arr.get_bandit(user, item).pull_arm(price)
             curr_bandit.process_signal(signal, price + 1e-9)
-            revenue += (1 - signal)*bandit_arr.get_bandit(user, item).get_mu()
+            revenue += bandit_arr.get_bandit(user, item).get_mu()
             acceptances += signal
         return {'revenue': revenue, 
                 'acceptances': acceptances}
