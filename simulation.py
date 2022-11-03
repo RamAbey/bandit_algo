@@ -20,10 +20,10 @@ class Simulation():
         self.regret = []
         self.solver = solver
         self.random=False
-        self.learned_bandit_array = LearnedBanditArray(self.num_users, self.num_items)
 
     def set_bandit_array(self, seed=0):
         self.bandit_array = BanditArray(self.num_users, self.num_items, seed=seed, random=self.random)
+        return self.bandit_array
 
     def get_optimal(self, seed=0):
         self.set_bandit_array(seed=0)
@@ -51,6 +51,7 @@ class Simulation():
 
         
     def run_simulation(self, iterations, seed=0):
+        self.learned_bandit_array = LearnedBanditArray(self.num_users, self.num_items)
         self.set_bandit_array(seed=seed)
         model = ConcreteModel()
         model.Users = range(self.num_users)
@@ -78,6 +79,7 @@ class Simulation():
             model.obj.expr = sum(self.learned_bandit_array.get_bandit(u, i).high*model.x[u,i] for u in model.Users for i in model.Items)
             self.solver.solve(model)
             solved_allocation = [(u, i) for u in model.Users for i in model.Items if model.x[u,i].value > 0.5]
+            print("allocation", solved_allocation)
             result = self.allocation.allocate(self.bandit_array, self.learned_bandit_array, solved_allocation)
             self.revenue.append(result['revenue'])
         
