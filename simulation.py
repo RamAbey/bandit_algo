@@ -25,8 +25,30 @@ class Simulation():
     def set_bandit_array(self, seed=0):
         self.bandit_array = BanditArray(self.num_users, self.num_items, seed=seed, random=self.random)
 
-    def get_optimal(self):
-        pass
+    def get_optimal(self, seed=0):
+        self.set_bandit_array(seed=0)
+        model = ConcreteModel()
+        model.Users = range(self.num_users)
+        model.Items = range(self.num_items)
+        model.x = Var(model.Users, model.Items, within=Binary)
+        model.obj = Objective(
+            expr=sum(self.bandit_array.get_bandit(u, i).mu*model.x[u,i] for u in model.Users for i in model.Items), sense=maximize)
+        model.item_capacity = ConstraintList()
+        temp_item_iter = 0
+        for i in model.Items:
+            model.item_capacity.add(
+                sum(model.x[u,i] for u in model.Users) <= self.capacities[temp_item_iter]
+            )
+            temp_item_iter += 1
+        model.user_capacity = ConstraintList()
+        for u in model.Users:
+            model.user_capacity.add(
+                sum(model.x[u,i] for i in model.Items) <= 1
+            )
+        self.solver.solve(model)
+        return model.obj()
+
+
         
     def run_simulation(self, iterations, seed=0):
         self.set_bandit_array(seed=seed)

@@ -52,7 +52,7 @@ class MidPoint(Allocation):
     name = 'midpoint'
 
     def get_price(self, learned_bandit):
-        return (learned_bandit.high + learned_bandit.low)/2 - 1e-5
+        return (learned_bandit.high + learned_bandit.low)/2 - 1e-10
 
     def allocate(self, bandit_arr, learned_bandit_arr, allocation):
         revenue, acceptances = 0, 0
@@ -63,7 +63,6 @@ class MidPoint(Allocation):
             curr_bandit.process_signal(signal, price)
             revenue += signal*price
             acceptances += signal
-        print(learned_bandit_arr.learned_bandit_arr)
         return {'revenue': revenue, 
                 'acceptances': acceptances}
 
