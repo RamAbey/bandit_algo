@@ -15,7 +15,10 @@ class Bandit():
         return self.mu
 
     def pull_arm(self, price_offered):
-        return 0 if self.mu <= price_offered else 1
+        if price_offered <= self.mu:
+            return 1
+        else:
+            return 0
 
 
 
