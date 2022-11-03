@@ -63,9 +63,9 @@ class MidPoint(Allocation):
             print(price, signal)
             curr_bandit.process_signal(signal, price)
             revenue += signal*price
-            print(revenue)
             acceptances += signal
-            return {'revenue': revenue} #, acceptances
+        return {'revenue': revenue, 
+                'acceptances': acceptances}
 
 
 """
