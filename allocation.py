@@ -82,16 +82,40 @@ class Walrasian(Allocation):
             return learned_bandit.dual
         return (learned_bandit.high + learned_bandit.low)/2
 
-"""
+
 class SyncedWalrasian(Walrasian):
+
+    name = 'syncedw'
+
+    def get_price(self, learned_bandit):
+        if learned_bandit.high - learned_bandit.low < 1e-5:
+            pass
+        return (learned_bandit.high + learned_bandit.low)/2
 
 
 class ToleratedWalrasian(Walrasian):
 
+    name = 'toleratedw'
+
+    def get_price(self, learned_bandit):
+        if learned_bandit.high - learned_bandit.low < 1e-5:
+            pass
+        return (learned_bandit.high + learned_bandit.low)/2
 
 class ClippedWalrasian(Walrasian):
 
+    name = 'clippedw'
+
+    def get_price(self, learned_bandit):
+        if learned_bandit.high - learned_bandit.low < 1e-5:
+            pass
+        return (learned_bandit.high + learned_bandit.low)/2
 
 class SmoothedWalrasian(Walrasian):
-"""
 
+    name = 'smoothedw'
+
+    def get_price(self, learned_bandit):
+        if learned_bandit.high - learned_bandit.low < 1e-5:
+            pass
+        return (learned_bandit.high + learned_bandit.low)/2
