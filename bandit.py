@@ -67,7 +67,7 @@ class LearnedBandit():
         self.dual = 0.5
         self.use_walrasian = False
 
-    def signal(self, signal, price):
+    def process_signal(self, signal, price):
         """
         Modify high/low or alpha/beta based on response of bandit(user,item).get_price()
         """
