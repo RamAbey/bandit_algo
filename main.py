@@ -2,6 +2,7 @@ import bandit, simulation
 from allocation import MidPoint
 from simulation import Simulation
 from pyomo.opt import SolverFactory
+import matplotlib.pyplot as plt
 
 
 if __name__ == "__main__":
@@ -12,5 +13,5 @@ if __name__ == "__main__":
     if allocation_name == "midpoint":
         allocation = MidPoint()
     simulation = Simulation(allocation, num_users, num_items, solver=SolverFactory('glpk'))
-    simulation.run_simulation(iterations)
-    print("ran simulation")
+    revenue = simulation.run_simulation(iterations)
+    plt.plot(range(iterations), revenue)
