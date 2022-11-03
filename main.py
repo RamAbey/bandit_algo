@@ -14,4 +14,5 @@ if __name__ == "__main__":
         allocation = MidPoint()
     simulation = Simulation(allocation, num_users, num_items, solver=SolverFactory('glpk'))
     revenue = simulation.run_simulation(iterations)
+    print("True Optimal: ", simulation.get_optimal())
     print(revenue)
