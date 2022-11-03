@@ -1,5 +1,5 @@
 import bandit, simulation
-from allocation import MidPoint, GradLower, Walrasian
+from allocation import *
 from simulation import Simulation
 from pyomo.opt import SolverFactory
 import matplotlib.pyplot as plt
@@ -12,9 +12,21 @@ if __name__ == "__main__":
     elif allocation_name == "gradlower":
         allocation = GradLower()
     elif allocation_name == "walrasian":
-        allocation = Walrasian()
+        walrasian_allocation_name = str(input("Select Allocation: [walrasian / toleratedw / syncedw / clippedw / smoothedw]? "))
+        if walrasian_allocation_name == 'walrasian':
+            allocation = Walrasian()
+        elif walrasian_allocation_name == "toleratedw":
+            allocation = ToleratedWalrasian()
+        elif walrasian_allocation_name == "syncedw":
+            allocation = SyncedWalrasian()
+        elif walrasian_allocation_name == "clippedw":
+            allocation = ClippedWalrasian()
+        elif walrasian_allocation_name == "smoothedw":
+            allocation = SmoothedWalrasian()
+        else:
+            raise Exception(walrasian_allocation_name + " allocation not implemented")
     else:
-        raise Exception("Allocation not implemented.")
+        raise Exception(allocation_name + " allocation not implemented.")
     iterations = int(input("Iterations? "))
     num_users = int(input("Num Users? "))
     num_items = int(input("Num Items? "))
