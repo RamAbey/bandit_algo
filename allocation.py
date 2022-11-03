@@ -28,7 +28,7 @@ class LearnedBandit():
         self.use_walrasian = False
 
     def process_signal(self, signal, price):
-        if signal < 0.5:
+        if signal > 0.5:
             self.low = max(self.low, price)
         else:
             self.high = min(self.high, price)
