@@ -6,10 +6,19 @@ from pyomo.opt import SolverFactory
 class Allocation:
 
     def __init__(self):
-        self.model=None
-
-    def allocate():
         pass
+
+    def allocate(self, bandit_arr, learned_bandit_arr, allocation):
+        revenue, acceptances = 0, 0
+        for (user, item) in allocation:
+            curr_bandit = learned_bandit_arr.get_bandit(user, item)
+            price = self.get_price(curr_bandit)
+            signal = bandit_arr.get_bandit(user, item).pull_arm(price)
+            curr_bandit.process_signal(signal, price)
+            revenue += signal*price
+            acceptances += signal
+        return {'revenue': revenue, 
+                'acceptances': acceptances}
 
     def get_price():
         pass
@@ -54,6 +63,7 @@ class MidPoint(Allocation):
     def get_price(self, learned_bandit):
         return (learned_bandit.high + learned_bandit.low)/2 - 1e-10
 
+    """
     def allocate(self, bandit_arr, learned_bandit_arr, allocation):
         revenue, acceptances = 0, 0
         for (user, item) in allocation:
@@ -63,10 +73,9 @@ class MidPoint(Allocation):
             curr_bandit.process_signal(signal, price)
             revenue += signal*price
             acceptances += signal
-        print(acceptances)
         return {'revenue': revenue, 
                 'acceptances': acceptances}
-
+    """
 
 class GradLower(Allocation):
 
@@ -77,6 +86,7 @@ class GradLower(Allocation):
             return learned_bandit.low
         return (learned_bandit.high + learned_bandit.low)/2
 
+    """
     def allocate(self, bandit_arr, learned_bandit_arr, allocation):
         revenue, acceptances = 0, 0
         for (user, item) in allocation:
@@ -86,10 +96,9 @@ class GradLower(Allocation):
             curr_bandit.process_signal(signal, price)
             revenue += signal*price
             acceptances += signal
-        print(acceptances)
         return {'revenue': revenue, 
                 'acceptances': acceptances}
-
+        """
 
 """
 class Walrasian(Allocation):
