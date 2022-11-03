@@ -54,39 +54,3 @@ class BanditArray():
 
     def get_bandit(self, user, item):
         return self.bandit_arr[user][item]
-
-
-
-class LearnedBandit():
-
-    def __init__(self, user, item):
-        self.user = user
-        self.item = item
-        self.high = 1.0
-        self.low = 0.0
-        self.dual = 0.5
-        self.use_walrasian = False
-
-    def process_signal(self, signal, price):
-        """
-        Modify high/low or alpha/beta based on response of bandit(user,item).get_price()
-        """
-        if signal < 0.5:
-            self.low = max(self.low, price)
-        else:
-            self.high = min(self.high, price)
-
-
-
-class LearnedBanditArray():
-
-    def __init__(self, num_users, num_items):
-        self.learned_bandit_arr = []
-        for i in range(num_users):
-            curr_row = []
-            for j in range(num_items):
-                curr_row.append( LearnedBandit(user=i, item=j) )
-            self.learned_bandit_arr.append(curr_row)
-
-    def get_bandit(self, user, item):
-        return self.learned_bandit_arr[user][item]

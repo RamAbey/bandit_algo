@@ -5,6 +5,7 @@ from pyomo.environ import *
 from pyomo.opt import SolverFactory
 
 from bandit import *
+from allocation import LearnedBanditArray
 
 class Simulation():
 
