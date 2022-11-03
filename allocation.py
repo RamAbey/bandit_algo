@@ -52,10 +52,10 @@ class MidPoint(Allocation):
     name = 'midpoint'
 
     def get_price(self, learned_bandit):
-        return (learned_bandit.high + learned_bandit.low) // 2
+        return (learned_bandit.high + learned_bandit.low)/2
 
     def allocate(self, bandit_arr, learned_bandit_arr, allocation):
-        revenue, acceptances = 0, 0
+        revenue = 0
         for (user, item) in allocation:
             curr_bandit = learned_bandit_arr.get_bandit(user, item)
             price = self.get_price(curr_bandit)
