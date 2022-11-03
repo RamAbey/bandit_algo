@@ -42,6 +42,15 @@ class LearnedBandit():
         else:
             self.high = min(self.high, price)
 
+    def get_spread(self):
+        return self.high - self.low
+    
+    def set_use_walrasian(self):
+        self.use_walrasian = True
+    
+    def get_use_walrasian(self):
+        return self.use_walrasian
+
 class LearnedBanditArray():
 
     def __init__(self, num_users, num_items):
@@ -68,7 +77,7 @@ class GradLower(Allocation):
     name = 'gradlower'
 
     def get_price(self, learned_bandit):
-        if learned_bandit.high - learned_bandit.low < 1e-5:
+        if learned_bandit.get_spread() < 1e-5:
             return learned_bandit.low
         return (learned_bandit.high + learned_bandit.low)/2
 
@@ -78,7 +87,7 @@ class Walrasian(Allocation):
     name = 'walrasian'
 
     def get_price(self, learned_bandit):
-        if learned_bandit.high - learned_bandit.low < 1e-5:
+        if learned_bandit.get_spread() < 1e-5:
             return learned_bandit.dual
         return (learned_bandit.high + learned_bandit.low)/2
 
@@ -87,10 +96,35 @@ class SyncedWalrasian(Walrasian):
 
     name = 'syncedw'
 
-    def get_price(self, learned_bandit):
-        if learned_bandit.high - learned_bandit.low < 1e-5:
-            pass
+    def __init__(self):
+        self.walrasian_switch = False
+
+    def get_price(self, learned_bandit, walrasian_switch):
+        if walrasian_switch:
+            return learned_bandit.dual
         return (learned_bandit.high + learned_bandit.low)/2
+
+    def allocate(self, bandit_arr, learned_bandit_arr, allocation):
+        revenue, acceptances = 0, 0
+        if not self.walrasian_switch:
+            walrasian_switch = True
+            for (user, item) in allocation:
+                curr_bandit = learned_bandit_arr.get_bandit(user, item)
+                if curr_bandit.get_spread() < 1e-5:
+                    curr_bandit.set_use_walrasian()
+                if not curr_bandit.get_use_walrasian():
+                    walrasian_switch = False
+            if walrasian_switch:
+                self.warlasian_switch = True
+        for (user, item) in allocation:
+            curr_bandit = learned_bandit_arr.get_bandit(user, item)
+            price = self.get_price(curr_bandit, walrasian_switch)
+            signal = bandit_arr.get_bandit(user, item).pull_arm(price)
+            curr_bandit.process_signal(signal, price)
+            revenue += signal*price
+            acceptances += signal
+        return {'revenue': revenue, 
+                'acceptances': acceptances}
 
 
 class ToleratedWalrasian(Walrasian):
@@ -98,7 +132,7 @@ class ToleratedWalrasian(Walrasian):
     name = 'toleratedw'
 
     def get_price(self, learned_bandit):
-        if learned_bandit.high - learned_bandit.low < 1e-5:
+        if learned_bandit.get_spread() < 1e-5:
             pass
         return (learned_bandit.high + learned_bandit.low)/2
 
@@ -107,7 +141,7 @@ class ClippedWalrasian(Walrasian):
     name = 'clippedw'
 
     def get_price(self, learned_bandit):
-        if learned_bandit.high - learned_bandit.low < 1e-5:
+        if learned_bandit.get_spread() < 1e-5:
             pass
         return (learned_bandit.high + learned_bandit.low)/2
 
@@ -116,6 +150,6 @@ class SmoothedWalrasian(Walrasian):
     name = 'smoothedw'
 
     def get_price(self, learned_bandit):
-        if learned_bandit.high - learned_bandit.low < 1e-5:
+        if learned_bandit.get_spread() < 1e-5:
             pass
         return (learned_bandit.high + learned_bandit.low)/2
