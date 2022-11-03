@@ -42,6 +42,7 @@ class RandomBandit(Bandit):
 class BanditArray():
 
     def __init__(self, num_users, num_items, seed=0, random=False):
+        np.random.seed(seed)
         self.bandit_arr = []
         for i in range(num_users):
             curr_row = []
