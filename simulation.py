@@ -56,7 +56,7 @@ class Simulation():
             model.obj.expr = sum(self.learned_bandit_array.get_bandit(u, i).high*model.x[u,i] for u in model.Users for i in model.Items)
             self.solver.solve(model)
             solved_allocation = [(u, i) for u in model.Users for i in model.Items if model.x[u,i].value > 0.5]
-            result = self.allocation.allocate(self.bandit_arr, self.learned_bandit_array, solved_allocation)
+            result = self.allocation.allocate(self.bandit_array, self.learned_bandit_array, solved_allocation)
             self.revenue.append(result['revenue'])
         
 
