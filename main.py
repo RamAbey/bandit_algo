@@ -1,8 +1,6 @@
-import bandit, simulation
 from allocation import *
 from simulation import Simulation
 from pyomo.opt import SolverFactory
-import matplotlib.pyplot as plt
 
 
 if __name__ == "__main__":
