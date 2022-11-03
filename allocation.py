@@ -63,6 +63,7 @@ class MidPoint(Allocation):
             curr_bandit.process_signal(signal, price)
             revenue += signal*price
             acceptances += signal
+        print(learned_bandit_arr.learned_bandit_arr)
         return {'revenue': revenue, 
                 'acceptances': acceptances}
 
