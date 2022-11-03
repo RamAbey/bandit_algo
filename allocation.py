@@ -52,7 +52,30 @@ class MidPoint(Allocation):
     name = 'midpoint'
 
     def get_price(self, learned_bandit):
-        return (learned_bandit.high + learned_bandit.low)/2 - 1e-10
+        return (learned_bandit.high + learned_bandit.low)/2
+
+    def allocate(self, bandit_arr, learned_bandit_arr, allocation):
+        revenue, acceptances = 0, 0
+        for (user, item) in allocation:
+            curr_bandit = learned_bandit_arr.get_bandit(user, item)
+            price = self.get_price(curr_bandit)
+            signal = bandit_arr.get_bandit(user, item).pull_arm(price)
+            curr_bandit.process_signal(signal, price + 1e-9)
+            revenue += signal*price
+            acceptances += signal
+        print(acceptances)
+        return {'revenue': revenue, 
+                'acceptances': acceptances}
+
+
+class GradLower(Allocation):
+
+    name = 'gradlower'
+
+    def get_price(self, learned_bandit):
+        if learned_bandit.high - learned_bandit.low < 1e-5:
+            return learned_bandit.low
+        return (learned_bandit.high + learned_bandit.low)/2
 
     def allocate(self, bandit_arr, learned_bandit_arr, allocation):
         revenue, acceptances = 0, 0
@@ -69,9 +92,6 @@ class MidPoint(Allocation):
 
 
 """
-class GradLower(Allocation):
-
-
 class Walrasian(Allocation):
 
 
