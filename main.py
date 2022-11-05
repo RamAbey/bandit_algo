@@ -18,13 +18,13 @@ if __name__ == "__main__":
         elif walrasian_allocation_name == "syncedw":
             allocation = SyncedWalrasian()
         elif walrasian_allocation_name == "clippedw":
-            alpha = int(input("alpha [0, 1]: "))
-            beta = int(input("beta [0, 1]: "))
+            alpha = float(input("alpha [0, 1]: "))
+            beta = float(input("beta [0, 1]: "))
             allocation = ClippedWalrasian(alpha, beta)
         elif walrasian_allocation_name == "smoothedw":
-            alpha = int(input("alpha [0, 1]: "))
-            beta = int(input("beta [0, 1]: "))
-            smooth_param = int(input("smoothing param: "))
+            alpha = float(input("alpha [0, 1]: "))
+            beta = float(input("beta [0, 1]: "))
+            smooth_param = float(input("smoothing param: "))
             allocation = SmoothedWalrasian(alpha, beta, smooth_param)
         else:
             raise Exception(walrasian_allocation_name + " allocation not implemented")
