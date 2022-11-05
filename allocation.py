@@ -1,4 +1,4 @@
-
+import numpy as np
 
 class Allocation:
 
@@ -128,25 +128,45 @@ class ToleratedWalrasian(Walrasian):
 
     name = 'toleratedw'
 
-    def get_price(self, learned_bandit):
+    def get_price(self, learned_bandit, tolerance):
         if learned_bandit.get_spread() < 1e-5:
-            pass
+            return learned_bandit.dual - tolerance
         return (learned_bandit.high + learned_bandit.low)/2
 
 class ClippedWalrasian(Walrasian):
 
+    def __init__(self, alpha, beta):
+        self.alpha = alpha
+        self.beta = beta
+
     name = 'clippedw'
 
     def get_price(self, learned_bandit):
-        if learned_bandit.get_spread() < 1e-5:
-            pass
-        return (learned_bandit.high + learned_bandit.low)/2
+        if learned_bandit.get_spread() > 1e-5:
+            if learned_bandit.dual < learned_bandit.low + self.alpha*learned_bandit.get_spread():
+                return learned_bandit.low + self.alpha*learned_bandit.get_spread()
+            elif learned_bandit.dual > learned_bandit.low + self.beta*learned_bandit.get_spread():
+                return learned_bandit.low + self.beta*learned_bandit.get_spread()
+            else:
+                return learned_bandit.dual
+        return learned_bandit.dual
 
 class SmoothedWalrasian(Walrasian):
+
+    def __init__(self, alpha, beta, smooth_param):
+        self.alpha = alpha
+        self.beta = beta
+        self.smooth_param = smooth_param
 
     name = 'smoothedw'
 
     def get_price(self, learned_bandit):
-        if learned_bandit.get_spread() < 1e-5:
-            pass
-        return (learned_bandit.high + learned_bandit.low)/2
+        if learned_bandit.get_spread() > 1e-5:
+            if learned_bandit.dual < learned_bandit.low + self.alpha*learned_bandit.get_spread():
+                return learned_bandit.low + self.alpha*learned_bandit.get_spread()
+            elif learned_bandit.dual > learned_bandit.low + self.beta*learned_bandit.get_spread():
+                return learned_bandit.low + self.beta*learned_bandit.get_spread()
+            else:
+                smooth_mid_pt = (learned_bandit.low + self.alpha*learned_bandit.get_spread() + self.beta*learned_bandit.get_spread())/2
+                return ( (self.beta - self.alpha)*learned_bandit.get_spread() )/( 1 + np.exp(-1*self.smooth_param*(learned_bandit.dual - smooth_mid_pt) )) + learned_bandit.low + self.alpha*learned_bandit.get_spread()
+        return learned_bandit.dual

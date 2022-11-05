@@ -19,7 +19,7 @@ class Simulation():
         self.dissatisfaction = []
         self.regret = []
         self.solver = solver
-        self.random=False
+        self.random = False
 
     def set_bandit_array(self, seed=0):
         self.bandit_array = BanditArray(self.num_users, self.num_items, seed=seed, random=self.random)
